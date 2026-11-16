@@ -110,9 +110,6 @@ MAIN_MENU:
 
     MOV CHOICE,AL
 
-    MOV AH,01H
-    INT 21H
-
     CMP CHOICE,'1'
     JE CREATE_ACCOUNT
 
@@ -396,9 +393,6 @@ BANK_MENU:
     INT 21H
 
     MOV CHOICE,AL
-
-    MOV AH,01H
-    INT 21H
 
     CMP CHOICE,'1'
     JE CHECK_BALANCE
@@ -697,7 +691,7 @@ DISPLAY_NUMBER PROC
 
 CONVERT_NUMBER:
 
-    ; DX uninitialized initially
+    XOR DX,DX
 
     DIV BX
 
@@ -730,6 +724,5 @@ DISPLAY_DONE:
     RET
 
 DISPLAY_NUMBER ENDP
-
 
 END MAIN
