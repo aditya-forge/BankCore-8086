@@ -221,10 +221,95 @@ MOBILE_DONE:
 
     ; CREATE PIN
 
-    ; Placeholder for PIN creation
+CREATE_PIN:
+
+    LEA DX,PIN_MSG
+    MOV AH,09H
+    INT 21H
+
+    MOV BYTE PTR PIN_BUF+1,0
+
+    MOV AH,0AH
+    LEA DX,PIN_BUF
+    INT 21H
+
+    CMP BYTE PTR PIN_BUF+1,4
+    JNE PIN_ERROR
+
+    LEA SI,PIN_BUF+2
+    LEA DI,PIN_DATA
+
+    MOV CX,4
+
+COPY_INITIAL_PIN:
+
+    MOV AL,[SI]
+
+    CMP AL,'0'
+    JB PIN_ERROR
+
+    CMP AL,'9'
+    JA PIN_ERROR
+
+    MOV [DI],AL
+
+    INC SI
+    INC DI
+
+    LOOP COPY_INITIAL_PIN
+
+    JMP INITIAL_DEPOSIT
+
+PIN_ERROR:
+
+    LEA DX,INVALID_PIN
+    MOV AH,09H
+    INT 21H
+
+    JMP CREATE_PIN
+
+
+    ; INITIAL DEPOSIT
+
+INITIAL_DEPOSIT:
+
+    LEA DX,DEPOSIT_MSG
+    MOV AH,09H
+    INT 21H
+
+    CALL READ_NUMBER
+
+    MOV BALANCE,AX
+
     MOV ACCOUNT_CREATED,1
+
+
+    ; ACCOUNT CREATED
+
+    LEA DX,CREATED
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,ACC_MSG
+    MOV AH,09H
+    INT 21H
+
+    MOV AX,ACCOUNT_NO
+    CALL DISPLAY_NUMBER
+
     JMP MAIN_MENU
 
+
+ACCOUNT_EXISTS:
+
+    LEA DX,INVALID
+    MOV AH,09H
+    INT 21H
+
+    JMP MAIN_MENU
+
+
+; =========================================
 EXIT_SYSTEM:
     LEA DX,EXIT_MSG
     MOV AH,09H
