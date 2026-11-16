@@ -624,4 +624,52 @@ EXIT_SYSTEM:
 MAIN ENDP
 
 
+; =========================================
+;              READ NUMBER
+; =========================================
+
+READ_NUMBER PROC
+
+    XOR BX,BX
+
+READ_LOOP:
+
+    MOV AH,01H
+    INT 21H
+
+    CMP AL,13
+    JE READ_DONE
+
+    CMP AL,'0'
+    JB READ_LOOP
+
+    CMP AL,'9'
+    JA READ_LOOP
+
+    SUB AL,'0'
+
+    XOR AH,AH
+
+    MOV DI,AX
+
+    MOV AX,BX
+    MOV CX,10
+
+    MUL CX
+
+    ADD AX,DI
+
+    MOV BX,AX
+
+    JMP READ_LOOP
+
+READ_DONE:
+
+    MOV AX,BX
+
+    RET
+
+READ_NUMBER ENDP
+
+
 END MAIN
