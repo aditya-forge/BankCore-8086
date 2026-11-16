@@ -310,6 +310,79 @@ ACCOUNT_EXISTS:
 
 
 ; =========================================
+;                   LOGIN
+; =========================================
+
+LOGIN:
+
+    CMP ACCOUNT_CREATED,1
+    JNE ACCOUNT_NOT_FOUND
+
+    LEA DX,LOGIN_ACC
+    MOV AH,09H
+    INT 21H
+
+    CALL READ_NUMBER
+
+    CMP AX,ACCOUNT_NO
+    JNE LOGIN_ERROR
+
+    LEA DX,LOGIN_PIN
+    MOV AH,09H
+    INT 21H
+
+    MOV BYTE PTR PIN_BUF+1,0
+
+    MOV AH,0AH
+    LEA DX,PIN_BUF
+    INT 21H
+
+    CMP BYTE PTR PIN_BUF+1,4
+    JNE LOGIN_ERROR
+
+    LEA SI,PIN_BUF+2
+    LEA DI,PIN_DATA
+
+    MOV CX,4
+
+CHECK_LOGIN_PIN:
+
+    MOV AL,[SI]
+    CMP AL,[DI]
+
+    JNE LOGIN_ERROR
+
+    INC SI
+    INC DI
+
+    LOOP CHECK_LOGIN_PIN
+
+    LEA DX,LOGIN_OK
+    MOV AH,09H
+    INT 21H
+
+    JMP BANK_MENU
+
+
+ACCOUNT_NOT_FOUND:
+
+    LEA DX,NO_ACCOUNT
+    MOV AH,09H
+    INT 21H
+
+    JMP MAIN_MENU
+
+
+LOGIN_ERROR:
+
+    LEA DX,LOGIN_FAIL
+    MOV AH,09H
+    INT 21H
+
+    JMP MAIN_MENU
+
+
+; =========================================
 EXIT_SYSTEM:
     LEA DX,EXIT_MSG
     MOV AH,09H
