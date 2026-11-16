@@ -672,4 +672,64 @@ READ_DONE:
 READ_NUMBER ENDP
 
 
+; =========================================
+;             DISPLAY NUMBER
+; =========================================
+
+DISPLAY_NUMBER PROC
+
+    PUSH BX
+    PUSH CX
+    PUSH DX
+
+    MOV BX,10
+    XOR CX,CX
+
+    CMP AX,0
+    JNE CONVERT_NUMBER
+
+    MOV DL,'0'
+    MOV AH,02H
+    INT 21H
+
+    JMP DISPLAY_DONE
+
+
+CONVERT_NUMBER:
+
+    ; DX uninitialized initially
+
+    DIV BX
+
+    PUSH DX
+
+    INC CX
+
+    CMP AX,0
+    JNE CONVERT_NUMBER
+
+
+PRINT_NUMBER:
+
+    POP DX
+
+    ADD DL,'0'
+
+    MOV AH,02H
+    INT 21H
+
+    LOOP PRINT_NUMBER
+
+
+DISPLAY_DONE:
+
+    POP DX
+    POP CX
+    POP BX
+
+    RET
+
+DISPLAY_NUMBER ENDP
+
+
 END MAIN
