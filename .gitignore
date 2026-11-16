@@ -1,0 +1,37 @@
+# Assembler and Linker Build Artifacts
+*.obj
+*.OBJ
+*.exe
+*.EXE
+*.map
+*.MAP
+*.lst
+*.LST
+*.crf
+*.CRF
+*.tr
+*.TR
+
+# Output Binaries Directory
+bin/
+build/
+dist/
+
+# Temporary and Backup Files
+*.tmp
+*.TMP
+*.bak
+*.BAK
+*~
+
+# Operating System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE and Editor Directories
+.vscode/
+.idea/
+*.swp
+*.swo
