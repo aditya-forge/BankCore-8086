@@ -130,6 +130,101 @@ MAIN_MENU:
 
 
 ; =========================================
+;              CREATE ACCOUNT
+; =========================================
+
+CREATE_ACCOUNT:
+
+    CMP ACCOUNT_CREATED,1
+    JE ACCOUNT_EXISTS
+
+    ; ENTER NAME
+
+    LEA DX,NAME_MSG
+    MOV AH,09H
+    INT 21H
+
+    MOV BYTE PTR NAME_BUF+1,0
+
+    MOV AH,0AH
+    LEA DX,NAME_BUF
+    INT 21H
+
+    LEA SI,NAME_DATA
+    LEA DI,NAME_BUF+2
+
+    MOV CL,NAME_BUF+1
+    XOR CH,CH
+
+    JCXZ NAME_DONE
+
+COPY_NAME:
+
+    MOV AL,[DI]
+    MOV [SI],AL
+
+    INC SI
+    INC DI
+
+    LOOP COPY_NAME
+
+NAME_DONE:
+
+    MOV BYTE PTR [SI],'$'
+
+
+    ; ENTER AGE
+
+    LEA DX,AGE_MSG
+    MOV AH,09H
+    INT 21H
+
+    CALL READ_NUMBER
+
+    MOV AGE,AX
+
+
+    ; ENTER MOBILE NUMBER
+
+    LEA DX,MOBILE_MSG
+    MOV AH,09H
+    INT 21H
+
+    MOV BYTE PTR MOBILE_BUF+1,0
+
+    MOV AH,0AH
+    LEA DX,MOBILE_BUF
+    INT 21H
+
+    LEA SI,MOBILE_DATA
+    LEA DI,MOBILE_BUF+2
+
+    MOV CL,MOBILE_BUF+1
+    XOR CH,CH
+
+    JCXZ MOBILE_DONE
+
+COPY_MOBILE:
+
+    MOV AL,[DI]
+    MOV [SI],AL
+
+    INC SI
+    INC DI
+
+    LOOP COPY_MOBILE
+
+MOBILE_DONE:
+
+    MOV BYTE PTR [SI],'$'
+
+
+    ; CREATE PIN
+
+    ; Placeholder for PIN creation
+    MOV ACCOUNT_CREATED,1
+    JMP MAIN_MENU
+
 EXIT_SYSTEM:
     LEA DX,EXIT_MSG
     MOV AH,09H
