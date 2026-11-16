@@ -497,12 +497,131 @@ INSUFFICIENT_BALANCE:
 
 ; =========================================
 ;                CHANGE PIN
+; =========================================
+
+CHANGE_PIN:
+
+    LEA DX,NEW_PIN_MSG
+    MOV AH,09H
+    INT 21H
+
+    MOV BYTE PTR NEW_PIN_BUF+1,0
+
+    MOV AH,0AH
+    LEA DX,NEW_PIN_BUF
+    INT 21H
+
+    CMP BYTE PTR NEW_PIN_BUF+1,4
+    JNE CHANGE_PIN_ERROR
+
+    LEA SI,NEW_PIN_BUF+2
+    LEA DI,PIN_DATA
+
+    MOV CX,4
+
+COPY_NEW_PIN:
+
+    MOV AL,[SI]
+
+    CMP AL,'0'
+    JB CHANGE_PIN_ERROR
+
+    CMP AL,'9'
+    JA CHANGE_PIN_ERROR
+
+    MOV [DI],AL
+
+    INC SI
+    INC DI
+
+    LOOP COPY_NEW_PIN
+
+    LEA DX,PIN_CHANGED
+    MOV AH,09H
+    INT 21H
+
+    JMP BANK_MENU
+
+
+CHANGE_PIN_ERROR:
+
+    LEA DX,INVALID_PIN
+    MOV AH,09H
+    INT 21H
+
+    JMP CHANGE_PIN
+
+
+; =========================================
+;              ACCOUNT DETAILS
+; =========================================
+
+ACCOUNT_DETAILS:
+
+    LEA DX,DETAIL_MSG
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,NAME_DISPLAY
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,NAME_DATA
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,AGE_DISPLAY
+    MOV AH,09H
+    INT 21H
+
+    MOV AX,AGE
+    CALL DISPLAY_NUMBER
+
+    LEA DX,MOBILE_DISPLAY
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,MOBILE_DATA
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,ACCOUNT_DISPLAY
+    MOV AH,09H
+    INT 21H
+
+    MOV AX,ACCOUNT_NO
+    CALL DISPLAY_NUMBER
+
+    JMP BANK_MENU
+
+
+; =========================================
+;                  LOGOUT
+; =========================================
+
+LOGOUT:
+
+    LEA DX,LOGOUT_MSG
+    MOV AH,09H
+    INT 21H
+
+    JMP MAIN_MENU
+
+
+; =========================================
+;                   EXIT
+; =========================================
+
 EXIT_SYSTEM:
+
     LEA DX,EXIT_MSG
     MOV AH,09H
     INT 21H
 
     MOV AH,4CH
     INT 21H
+
 MAIN ENDP
+
+
 END MAIN
