@@ -89,7 +89,9 @@ CHOICE DB ?
 ; =============== CODE SECTION ===============
 
 .CODE
+
 MAIN PROC
+
     MOV AX,@DATA
     MOV DS,AX
 
@@ -97,6 +99,38 @@ MAIN PROC
     MOV AH,09H
     INT 21H
 
+MAIN_MENU:
+
+    LEA DX,WELCOME
+    MOV AH,09H
+    INT 21H
+
+    MOV AH,01H
+    INT 21H
+
+    MOV CHOICE,AL
+
+    MOV AH,01H
+    INT 21H
+
+    CMP CHOICE,'1'
+    JE CREATE_ACCOUNT
+
+    CMP CHOICE,'2'
+    JE LOGIN
+
+    CMP CHOICE,'3'
+    JE EXIT_SYSTEM
+
+    LEA DX,INVALID
+    MOV AH,09H
+    INT 21H
+
+    JMP MAIN_MENU
+
+
+; =========================================
+EXIT_SYSTEM:
     LEA DX,EXIT_MSG
     MOV AH,09H
     INT 21H
