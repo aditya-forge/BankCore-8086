@@ -383,6 +383,86 @@ LOGIN_ERROR:
 
 
 ; =========================================
+;             BANKING DASHBOARD
+; =========================================
+
+BANK_MENU:
+
+    LEA DX,MENU
+    MOV AH,09H
+    INT 21H
+
+    MOV AH,01H
+    INT 21H
+
+    MOV CHOICE,AL
+
+    MOV AH,01H
+    INT 21H
+
+    CMP CHOICE,'1'
+    JE CHECK_BALANCE
+
+    CMP CHOICE,'2'
+    JE DEPOSIT_MONEY
+
+    CMP CHOICE,'3'
+    JE WITHDRAW_MONEY
+
+    CMP CHOICE,'4'
+    JE CHANGE_PIN
+
+    CMP CHOICE,'5'
+    JE ACCOUNT_DETAILS
+
+    CMP CHOICE,'6'
+    JE LOGOUT
+
+    LEA DX,INVALID
+    MOV AH,09H
+    INT 21H
+
+    JMP BANK_MENU
+
+
+; =========================================
+;              CHECK BALANCE
+; =========================================
+
+CHECK_BALANCE:
+
+    LEA DX,BAL_MSG
+    MOV AH,09H
+    INT 21H
+
+    MOV AX,BALANCE
+    CALL DISPLAY_NUMBER
+
+    JMP BANK_MENU
+
+
+; =========================================
+;              DEPOSIT MONEY
+; =========================================
+
+DEPOSIT_MONEY:
+
+    LEA DX,DEPOSIT_MSG
+    MOV AH,09H
+    INT 21H
+
+    CALL READ_NUMBER
+
+    ADD BALANCE,AX
+
+    LEA DX,DEP_SUCCESS
+    MOV AH,09H
+    INT 21H
+
+    JMP BANK_MENU
+
+
+; =========================================
 EXIT_SYSTEM:
     LEA DX,EXIT_MSG
     MOV AH,09H
