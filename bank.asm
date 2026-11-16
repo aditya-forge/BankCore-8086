@@ -463,6 +463,40 @@ DEPOSIT_MONEY:
 
 
 ; =========================================
+;              WITHDRAW MONEY
+; =========================================
+
+WITHDRAW_MONEY:
+
+    LEA DX,WITHDRAW_PROMPT
+    MOV AH,09H
+    INT 21H
+
+    CALL READ_NUMBER
+
+    CMP AX,BALANCE
+    JA INSUFFICIENT_BALANCE
+
+    SUB BALANCE,AX
+
+    LEA DX,WITH_SUCCESS
+    MOV AH,09H
+    INT 21H
+
+    JMP BANK_MENU
+
+
+INSUFFICIENT_BALANCE:
+
+    LEA DX,LOW_BAL
+    MOV AH,09H
+    INT 21H
+
+    JMP BANK_MENU
+
+
+; =========================================
+;                CHANGE PIN
 EXIT_SYSTEM:
     LEA DX,EXIT_MSG
     MOV AH,09H
